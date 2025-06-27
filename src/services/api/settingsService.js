@@ -90,9 +90,32 @@ export const testConnection = async (id) => {
   if (!setting) {
     throw new Error('Setting not found');
   }
+// Simulate connection test based on integration type
+  let isValid = false;
+  let message = '';
   
-  // Simulate connection test
-  const isValid = setting.apiUrl && setting.apiKey && setting.phoneNumberId;
+  switch (setting.category) {
+    case 'whatsapp':
+      isValid = setting.apiUrl && setting.apiKey && setting.phoneNumberId && setting.businessAccountId;
+      message = isValid ? 'WhatsApp connection successful' : 'WhatsApp connection failed - check your credentials';
+      break;
+    case 'postmark':
+      isValid = setting.apiUrl && setting.apiKey && setting.fromEmail && setting.fromName;
+      message = isValid ? 'Postmark connection successful' : 'Postmark connection failed - check your credentials';
+      break;
+    case 'smtp2go':
+      isValid = setting.apiUrl && setting.apiKey && setting.username && setting.smtpHost && setting.smtpPort;
+      message = isValid ? 'SMTP2Go connection successful' : 'SMTP2Go connection failed - check your credentials';
+      break;
+    case 'twilio':
+      isValid = setting.apiUrl && setting.accountSid && setting.authToken && setting.phoneNumber;
+      message = isValid ? 'Twilio connection successful' : 'Twilio connection failed - check your credentials';
+      break;
+    default:
+      isValid = setting.apiUrl && setting.apiKey;
+      message = isValid ? 'Connection successful' : 'Connection failed - check your credentials';
+  }
+  
   const status = isValid ? 'connected' : 'failed';
   
   // Update connection status
@@ -107,7 +130,7 @@ export const testConnection = async (id) => {
   return {
     success: isValid,
     status,
-    message: isValid ? 'Connection successful' : 'Connection failed - check your credentials'
+    message
   };
 };
 
