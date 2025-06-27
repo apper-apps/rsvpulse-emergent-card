@@ -1,37 +1,44 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Card from '@/components/atoms/Card';
-import Input from '@/components/atoms/Input';
-import FileUpload from '@/components/molecules/FileUpload';
-import Modal from '@/components/molecules/Modal';
-import ContactTable from '@/components/organisms/ContactTable';
-import SkeletonLoader from '@/components/organisms/SkeletonLoader';
-import ErrorState from '@/components/organisms/ErrorState';
-import EmptyState from '@/components/organisms/EmptyState';
-import { listService } from '@/services/api/listService';
-import { contactService } from '@/services/api/contactService';
-
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { listService } from "@/services/api/listService";
+import { contactService } from "@/services/api/contactService";
+import { create, getAll, update } from "@/services/api/settingsService";
+import ApperIcon from "@/components/ApperIcon";
+import FileUpload from "@/components/molecules/FileUpload";
+import Modal from "@/components/molecules/Modal";
+import SearchBar from "@/components/molecules/SearchBar";
+import SkeletonLoader from "@/components/organisms/SkeletonLoader";
+import ContactTable from "@/components/organisms/ContactTable";
+import EmptyState from "@/components/organisms/EmptyState";
+import ErrorState from "@/components/organisms/ErrorState";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
 const Lists = () => {
   const [lists, setLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
   const [contacts, setContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  // Edit states
+  const [editingListId, setEditingListId] = useState(null);
+  const [editListName, setEditListName] = useState('');
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   
-  // Form states
+// Form states
   const [newListName, setNewListName] = useState('');
   const [csvData, setCsvData] = useState([]);
-
   useEffect(() => {
     loadLists();
   }, []);
@@ -59,16 +66,71 @@ const Lists = () => {
     }
   };
 
-  const loadContacts = async (listId) => {
+const loadContacts = async (listId) => {
     setContactsLoading(true);
     try {
       const data = await contactService.getByListId(listId);
       setContacts(data);
+      setFilteredContacts(data);
+      setSearchQuery(''); // Reset search when changing lists
     } catch (err) {
       toast.error('Failed to load contacts');
     } finally {
       setContactsLoading(false);
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredContacts(contacts);
+      return;
+    }
+
+    const filtered = contacts.filter(contact => {
+      const searchTerm = query.toLowerCase();
+      return (
+        contact.name?.toLowerCase().includes(searchTerm) ||
+        contact.whatsappNumber?.toLowerCase().includes(searchTerm) ||
+        contact.email?.toLowerCase().includes(searchTerm)
+      );
+    });
+    
+    setFilteredContacts(filtered);
+  };
+
+  const handleEditList = (list) => {
+    setEditingListId(list.Id);
+    setEditListName(list.name);
+  };
+
+  const handleSaveListEdit = async () => {
+    if (!editListName.trim()) {
+      toast.error('Please enter a list name');
+      return;
+    }
+
+    try {
+      const updatedList = await listService.update(editingListId, { name: editListName.trim() });
+      setLists(prev => prev.map(list => 
+        list.Id === editingListId ? updatedList : list
+      ));
+      
+      if (selectedList?.Id === editingListId) {
+        setSelectedList(updatedList);
+      }
+      
+      setEditingListId(null);
+      setEditListName('');
+      toast.success('List name updated successfully');
+    } catch (err) {
+      toast.error('Failed to update list name');
+    }
+  };
+
+  const handleCancelListEdit = () => {
+    setEditingListId(null);
+    setEditListName('');
   };
 
   const handleCreateList = async () => {
@@ -220,7 +282,6 @@ const Lists = () => {
         <div>
           <h1 className="text-2xl font-heading font-bold text-gray-900">Contact Lists</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage your contact lists and import new contacts
           </p>
         </div>
         <div className="mt-4 sm:mt-0 flex space-x-3">
@@ -275,31 +336,85 @@ const Lists = () => {
                         : 'hover:bg-gray-50 border border-gray-200'
                       }
                     `}
-                  >
-                    <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
-                        <h4 className="font-medium text-sm truncate">{list.name}</h4>
-                        <p className={`text-xs mt-1 ${
-                          selectedList?.Id === list.Id ? 'text-white/70' : 'text-gray-500'
-                        }`}>
-                          {list.contactCount || 0} contacts
-                        </p>
+                        {editingListId === list.Id ? (
+                          <div className="space-y-2">
+                            <Input
+                              type="text"
+                              value={editListName}
+                              onChange={(e) => setEditListName(e.target.value)}
+                              className="text-sm"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleSaveListEdit();
+                                } else if (e.key === 'Escape') {
+                                  handleCancelListEdit();
+                                }
+                              }}
+                              autoFocus
+                            />
+                            <div className="flex space-x-1">
+                              <Button
+                                variant="ghost"
+                                size="xs"
+                                icon="Check"
+                                onClick={handleSaveListEdit}
+                                className="text-green-600 hover:bg-green-50"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="xs"
+                                icon="X"
+                                onClick={handleCancelListEdit}
+                                className="text-gray-400 hover:bg-gray-50"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <h4 className="font-medium text-sm truncate">{list.name}</h4>
+                            <p className={`text-xs mt-1 ${
+                              selectedList?.Id === list.Id ? 'text-white/70' : 'text-gray-500'
+                            }`}>
+                              {list.contactCount || 0} contacts
+                            </p>
+                          </>
+                        )}
                       </div>
                       
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        icon="Trash2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteList(list);
-                        }}
-                        className={`ml-2 ${
-                          selectedList?.Id === list.Id 
-                            ? 'text-white/70 hover:text-white hover:bg-white/10' 
-                            : 'text-gray-400 hover:text-error'
-                        }`}
-                      />
+                      {editingListId !== list.Id && (
+                        <div className="flex space-x-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon="Edit2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditList(list);
+                            }}
+                            className={`${
+                              selectedList?.Id === list.Id 
+                                ? 'text-white/70 hover:text-white hover:bg-white/10' 
+                                : 'text-gray-400 hover:text-primary'
+                            }`}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            icon="Trash2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteList(list);
+                            }}
+                            className={`${
+                              selectedList?.Id === list.Id 
+                                ? 'text-white/70 hover:text-white hover:bg-white/10' 
+                                : 'text-gray-400 hover:text-error'
+                            }`}
+                          />
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
@@ -311,13 +426,24 @@ const Lists = () => {
           <div className="lg:col-span-3">
             {selectedList ? (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-heading font-semibold">{selectedList.name}</h3>
-                    <p className="text-sm text-gray-500">{contacts.length} contacts</p>
+<div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-heading font-semibold">{selectedList.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {searchQuery ? `${filteredContacts.length} of ${contacts.length}` : `${contacts.length}`} contacts
+                      </p>
+                    </div>
                   </div>
+                  
+                  {contacts.length > 0 && (
+                    <SearchBar
+                      placeholder="Search by name, WhatsApp, or email..."
+                      onSearch={handleSearch}
+                      className="max-w-md"
+                    />
+                  )}
                 </div>
-                
                 {contacts.length === 0 && !contactsLoading ? (
                   <EmptyState
                     title="No contacts in this list"
@@ -327,8 +453,8 @@ const Lists = () => {
                     icon="UserPlus"
                   />
                 ) : (
-                  <ContactTable
-                    contacts={contacts}
+<ContactTable
+                    contacts={filteredContacts}
                     loading={contactsLoading}
                     onEdit={(contact) => {
                       // Edit functionality can be added later
@@ -338,7 +464,17 @@ onDelete={async (contact) => {
                       if (confirm(`Move ${contact.name} to deleted contacts?`)) {
                         try {
                           await contactService.delete(contact.Id);
-                          setContacts(prev => prev.filter(c => c.Id !== contact.Id));
+                          const updatedContacts = contacts.filter(c => c.Id !== contact.Id);
+                          setContacts(updatedContacts);
+                          setFilteredContacts(updatedContacts.filter(contact => {
+                            if (!searchQuery.trim()) return true;
+                            const searchTerm = searchQuery.toLowerCase();
+                            return (
+                              contact.name?.toLowerCase().includes(searchTerm) ||
+                              contact.whatsappNumber?.toLowerCase().includes(searchTerm) ||
+                              contact.email?.toLowerCase().includes(searchTerm)
+                            );
+                          }));
                           toast.success('Contact moved to deleted');
                         } catch (err) {
                           toast.error('Failed to delete contact');
