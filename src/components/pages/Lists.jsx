@@ -334,12 +334,12 @@ const Lists = () => {
                       // Edit functionality can be added later
                       toast.info('Edit functionality coming soon');
                     }}
-                    onDelete={async (contact) => {
-                      if (confirm(`Delete ${contact.name}?`)) {
+onDelete={async (contact) => {
+                      if (confirm(`Move ${contact.name} to deleted contacts?`)) {
                         try {
                           await contactService.delete(contact.Id);
                           setContacts(prev => prev.filter(c => c.Id !== contact.Id));
-                          toast.success('Contact deleted');
+                          toast.success('Contact moved to deleted');
                         } catch (err) {
                           toast.error('Failed to delete contact');
                         }

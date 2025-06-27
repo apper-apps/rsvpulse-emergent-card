@@ -5,14 +5,16 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 let contacts = [...contactsData];
 
 export const contactService = {
-  async getAll() {
+async getAll() {
     await delay(300);
-    return [...contacts];
+    return contacts.filter(contact => !contact.isDeleted).map(contact => ({ ...contact }));
   },
 
   async getByListId(listId) {
     await delay(300);
-    return contacts.filter(contact => contact.listId === parseInt(listId, 10));
+    return contacts.filter(contact => 
+      contact.listId === parseInt(listId, 10) && !contact.isDeleted
+    ).map(contact => ({ ...contact }));
   },
 
   async getById(id) {
@@ -72,7 +74,53 @@ export const contactService = {
     return { ...updatedContact };
   },
 
-  async delete(id) {
+async delete(id) {
+    await delay(250);
+    const index = contacts.findIndex(item => item.Id === parseInt(id, 10));
+    if (index === -1) {
+      throw new Error('Contact not found');
+    }
+    
+    // Soft delete - mark as deleted instead of removing
+    const contact = contacts[index];
+    const updatedContact = {
+      ...contact,
+      isDeleted: true,
+      deletedAt: new Date().toISOString()
+    };
+    
+    contacts[index] = updatedContact;
+    return { ...updatedContact };
+  },
+
+  async getAllDeleted() {
+    await delay(300);
+    return contacts.filter(contact => contact.isDeleted).map(contact => ({ ...contact }));
+  },
+
+  async restore(id) {
+    await delay(250);
+    const index = contacts.findIndex(item => item.Id === parseInt(id, 10));
+    if (index === -1) {
+      throw new Error('Contact not found');
+    }
+    
+    const contact = contacts[index];
+    if (!contact.isDeleted) {
+      throw new Error('Contact is not deleted');
+    }
+    
+    const restoredContact = {
+      ...contact,
+      isDeleted: false,
+      deletedAt: null
+    };
+    
+    contacts[index] = restoredContact;
+    return { ...restoredContact };
+  },
+
+  async permanentDelete(id) {
     await delay(250);
     const index = contacts.findIndex(item => item.Id === parseInt(id, 10));
     if (index === -1) {
