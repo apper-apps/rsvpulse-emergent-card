@@ -323,7 +323,7 @@ const loadContacts = async (listId) => {
               
               <div className="space-y-2">
                 {lists.map((list, index) => (
-                  <motion.div
+<motion.div
                     key={list.Id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -336,7 +336,8 @@ const loadContacts = async (listId) => {
                         : 'hover:bg-gray-50 border border-gray-200'
                       }
                     `}
-<div className="flex items-center justify-between">
+                  >
+                    <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
                         {editingListId === list.Id ? (
                           <div className="space-y-2">
