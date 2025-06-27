@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "name": "Sarah Johnson",
+    "whatsappNumber": "+1234567890",
+    "email": "sarah.johnson@email.com",
+    "listId": 1,
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Michael Chen",
+    "whatsappNumber": "+1234567891",
+    "email": "michael.chen@email.com",
+    "listId": 1,
+    "createdAt": "2024-01-15T10:31:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Emily Rodriguez",
+    "whatsappNumber": "+1234567892",
+    "email": "emily.rodriguez@email.com",
+    "listId": 1,
+    "createdAt": "2024-01-15T10:32:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "David Thompson",
+    "whatsappNumber": "+1234567893",
+    "email": "david.thompson@email.com",
+    "listId": 2,
+    "createdAt": "2024-01-18T09:00:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "Lisa Anderson",
+    "whatsappNumber": "+1234567894",
+    "email": "lisa.anderson@email.com",
+    "listId": 2,
+    "createdAt": "2024-01-18T09:01:00Z"
+  },
+  {
+    "Id": 6,
+    "name": "James Wilson",
+    "whatsappNumber": "+1234567895",
+    "email": "james.wilson@email.com",
+    "listId": 3,
+    "createdAt": "2024-01-20T11:20:00Z"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "Id": 1,
+    "listId": 1,
+    "message": "Hi {{Name}}, you're invited to our corporate event! Please confirm your attendance by replying to this message. We look forward to seeing you there!",
+    "sentAt": "2024-01-25T14:30:00Z",
+    "totalRecipients": 45
+  },
+  {
+    "Id": 2,
+    "listId": 2,
+    "message": "Dear {{Name}}, we're excited to invite you to our wedding celebration! Please RSVP by clicking the link in your email at {{Email}}. Can't wait to celebrate with you!",
+    "sentAt": "2024-01-22T16:45:00Z",
+    "totalRecipients": 28
+  }
+]

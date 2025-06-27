@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "name": "Corporate Event Invitees",
+    "contactCount": 45,
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-20T14:15:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Wedding Guest List",
+    "contactCount": 28,
+    "createdAt": "2024-01-18T09:00:00Z",
+    "updatedAt": "2024-01-22T16:45:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Birthday Party Friends",
+    "contactCount": 15,
+    "createdAt": "2024-01-20T11:20:00Z",
+    "updatedAt": "2024-01-25T08:30:00Z"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "broadcastId": 1,
+    "contactId": 1,
+    "status": "read",
+    "readAt": "2024-01-25T15:45:00Z"
+  },
+  {
+    "broadcastId": 1,
+    "contactId": 2,
+    "status": "delivered",
+    "readAt": null
+  },
+  {
+    "broadcastId": 1,
+    "contactId": 3,
+    "status": "read",
+    "readAt": "2024-01-25T16:20:00Z"
+  },
+  {
+    "broadcastId": 2,
+    "contactId": 4,
+    "status": "read",
+    "readAt": "2024-01-22T17:10:00Z"
+  },
+  {
+    "broadcastId": 2,
+    "contactId": 5,
+    "status": "sent",
+    "readAt": null
+  }
+]
