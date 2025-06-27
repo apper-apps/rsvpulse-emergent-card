@@ -1,0 +1,16 @@
+[
+  {
+    "Id": 1,
+    "category": "whatsapp",
+    "name": "WhatsApp Business API",
+    "apiUrl": "",
+    "apiKey": "",
+    "phoneNumberId": "",
+    "businessAccountId": "",
+    "isActive": false,
+    "lastTested": null,
+    "connectionStatus": "not_tested",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "1/15/2024 10:00:00 AMZ"
+  }
+]

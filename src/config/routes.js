@@ -2,6 +2,7 @@ import Lists from '@/components/pages/Lists';
 import Broadcast from '@/components/pages/Broadcast';
 import Reports from '@/components/pages/Reports';
 import DeletedContacts from '@/components/pages/DeletedContacts';
+import Settings from '@/components/pages/Settings';
 export const routes = {
   lists: {
     id: 'lists',
@@ -24,12 +25,19 @@ reports: {
     icon: 'BarChart3',
     component: Reports
   },
-  deleted: {
+deleted: {
     id: 'deleted',
     label: 'Deleted',
     path: '/deleted',
     icon: 'Trash2',
     component: DeletedContacts
+  },
+  settings: {
+    id: 'settings',
+    label: 'Settings',
+    path: '/settings',
+    icon: 'Settings',
+    component: Settings
   }
 };
 
