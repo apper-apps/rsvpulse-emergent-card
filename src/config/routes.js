@@ -1,5 +1,6 @@
 import Lists from '@/components/pages/Lists';
 import Broadcast from '@/components/pages/Broadcast';
+import Templates from '@/components/pages/Templates';
 import Reports from '@/components/pages/Reports';
 import DeletedContacts from '@/components/pages/DeletedContacts';
 import Settings from '@/components/pages/Settings';
@@ -10,13 +11,20 @@ export const routes = {
     path: '/lists',
     icon: 'Users',
     component: Lists
-  },
+},
   broadcast: {
     id: 'broadcast',
     label: 'Broadcast',
     path: '/broadcast',
     icon: 'Send',
     component: Broadcast
+  },
+  templates: {
+    id: 'templates',
+    label: 'Templates',
+    path: '/templates',
+    icon: 'FileText',
+    component: Templates
   },
 reports: {
     id: 'reports',

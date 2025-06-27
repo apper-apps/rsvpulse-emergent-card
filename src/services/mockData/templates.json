@@ -1,0 +1,47 @@
+[
+  {
+    "Id": 1,
+    "name": "Event Invitation",
+    "description": "Standard event invitation template",
+    "content": "<p>Hi <strong>{{Name}}</strong>,</p><p>You're invited to our upcoming event!</p><p><strong>Details:</strong></p><ul><li>Date: [Event Date]</li><li>Time: [Event Time]</li><li>Location: [Event Location]</li></ul><p>Please confirm your attendance by replying to this message.</p><p>Looking forward to seeing you there!</p><p>Best regards,<br>{{Company}}</p>",
+    "category": "event",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Welcome Message",
+    "description": "Welcome new subscribers or customers",
+    "content": "<p>Welcome <strong>{{Name}}</strong>!</p><p>Thank you for joining our community. We're excited to have you on board!</p><p>Here's what you can expect:</p><ul><li>Regular updates and news</li><li>Exclusive offers and promotions</li><li>Early access to new features</li></ul><p>If you have any questions, feel free to reach out to us at {{Email}}.</p><p>Welcome aboard!</p>",
+    "category": "welcome",
+    "createdAt": "2024-01-16T09:30:00Z",
+    "updatedAt": "2024-01-16T09:30:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Appointment Reminder",
+    "description": "Reminder for upcoming appointments",
+    "content": "<p>Hi <strong>{{Name}}</strong>,</p><p>This is a friendly reminder about your upcoming appointment:</p><p><strong>Appointment Details:</strong></p><ul><li>Date: [Appointment Date]</li><li>Time: [Appointment Time]</li><li>Location: [Appointment Location]</li></ul><p>Please arrive 10 minutes early and bring any necessary documents.</p><p>If you need to reschedule, please contact us at least 24 hours in advance.</p><p>Thank you!</p>",
+    "category": "reminder",
+    "createdAt": "2024-01-17T14:15:00Z",
+    "updatedAt": "2024-01-17T14:15:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Marketing Promotion",
+    "description": "Promotional message for marketing campaigns",
+    "content": "<p>🎉 <strong>Special Offer for {{Name}}!</strong> 🎉</p><p>Don't miss out on our limited-time promotion!</p><p><strong>Get 20% OFF</strong> on all products until [End Date]</p><p>Use code: <strong>SAVE20</strong></p><p>✨ <em>What's included:</em></p><ul><li>Free shipping on orders over $50</li><li>30-day money-back guarantee</li><li>24/7 customer support</li></ul><p>Shop now and save big!</p><p><a href=\"[Shop URL]\">Click here to shop</a></p>",
+    "category": "marketing",
+    "createdAt": "2024-01-18T11:20:00Z",
+    "updatedAt": "2024-01-18T11:20:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "Follow-up Message",
+    "description": "General follow-up template",
+    "content": "<p>Hi <strong>{{Name}}</strong>,</p><p>I wanted to follow up on our recent conversation.</p><p>As discussed, here are the next steps:</p><ol><li>[Action item 1]</li><li>[Action item 2]</li><li>[Action item 3]</li></ol><p>Please let me know if you have any questions or if there's anything else I can help you with.</p><p>I look forward to hearing from you soon.</p><p>Best regards,<br>[Your Name]</p>",
+    "category": "follow-up",
+    "createdAt": "2024-01-19T16:45:00Z",
+    "updatedAt": "2024-01-19T16:45:00Z"
+  }
+]

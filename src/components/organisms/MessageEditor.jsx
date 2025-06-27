@@ -1,23 +1,35 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Card from '@/components/atoms/Card';
-
+import 'react-quill/dist/quill.snow.css';
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import ReactQuill from "react-quill";
+import ApperIcon from "@/components/ApperIcon";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 const MessageEditor = ({ 
   value = '', 
   onChange, 
   className = '',
   placeholder = 'Type your message here...',
+  template = null,
   ...props 
 }) => {
   const [message, setMessage] = useState(value);
   const [showPreview, setShowPreview] = useState(false);
+  const [isRichText, setIsRichText] = useState(false);
   const textareaRef = useRef(null);
-
-  useEffect(() => {
+useEffect(() => {
     setMessage(value);
   }, [value]);
+
+  useEffect(() => {
+    if (template && template.content) {
+      setMessage(template.content);
+      onChange?.(template.content);
+      // Check if template content contains HTML tags
+      const hasHtml = /<[^>]*>/.test(template.content);
+      setIsRichText(hasHtml);
+    }
+  }, [template]);
 
   const handleMessageChange = (e) => {
     const newMessage = e.target.value;
@@ -25,6 +37,20 @@ const MessageEditor = ({
     onChange?.(newMessage);
   };
 
+  const handleRichTextChange = (content) => {
+    setMessage(content);
+    onChange?.(content);
+  };
+
+  const toggleEditorMode = () => {
+    if (isRichText) {
+      // Convert HTML to plain text
+      const plainText = message.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+      setMessage(plainText);
+      onChange?.(plainText);
+    }
+    setIsRichText(!isRichText);
+  };
   const insertMergeTag = (tag) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -98,25 +124,40 @@ const MessageEditor = ({
     { format: 'strikethrough', icon: 'Strikethrough', label: 'Strikethrough' }
   ];
 
-  return (
+return (
     <div className={className} {...props}>
       {/* Toolbar */}
       <Card padding="sm" className="mb-4">
         <div className="flex flex-wrap items-center gap-2">
-          {/* Format buttons */}
+          {/* Editor mode toggle */}
           <div className="flex items-center gap-1 pr-3 border-r border-gray-200">
-            {formatButtons.map((button) => (
-              <Button
-                key={button.format}
-                variant="ghost"
-                size="sm"
-                icon={button.icon}
-                onClick={() => formatText(button.format)}
-                className="text-gray-600 hover:text-primary"
-                title={button.label}
-              />
-            ))}
+            <Button
+              variant={isRichText ? 'primary' : 'outline'}
+              size="sm"
+              icon="Type"
+              onClick={toggleEditorMode}
+              className="text-xs"
+            >
+              {isRichText ? 'Rich Text' : 'Plain Text'}
+            </Button>
           </div>
+
+          {/* Format buttons - only show for plain text */}
+          {!isRichText && (
+            <div className="flex items-center gap-1 pr-3 border-r border-gray-200">
+              {formatButtons.map((button) => (
+                <Button
+                  key={button.format}
+                  variant="ghost"
+                  size="sm"
+                  icon={button.icon}
+                  onClick={() => formatText(button.format)}
+                  className="text-gray-600 hover:text-primary"
+                  title={button.label}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Merge tag buttons */}
           <div className="flex items-center gap-2">
@@ -153,16 +194,44 @@ const MessageEditor = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Editor */}
         <div className={showPreview ? '' : 'lg:col-span-2'}>
-          <Card padding="none" className="h-64">
-            <textarea
-              ref={textareaRef}
-              value={message}
-              onChange={handleMessageChange}
-              placeholder={placeholder}
-              className="w-full h-full p-4 border-none resize-none focus:outline-none focus:ring-0 rounded-lg"
-              style={{ minHeight: '240px' }}
-            />
-          </Card>
+          {isRichText ? (
+            <Card padding="none" className="h-64">
+              <ReactQuill
+                value={message}
+                onChange={handleRichTextChange}
+                placeholder={placeholder}
+                theme="snow"
+                style={{ height: '200px' }}
+                modules={{
+                  toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    ['link'],
+                    ['clean']
+                  ]
+                }}
+                formats={[
+                  'header', 'bold', 'italic', 'underline', 'strike',
+                  'list', 'bullet', 'blockquote', 'code-block',
+                  'color', 'background', 'link'
+                ]}
+              />
+            </Card>
+          ) : (
+            <Card padding="none" className="h-64">
+              <textarea
+                ref={textareaRef}
+                value={message}
+                onChange={handleMessageChange}
+                placeholder={placeholder}
+                className="w-full h-full p-4 border-none resize-none focus:outline-none focus:ring-0 rounded-lg"
+                style={{ minHeight: '240px' }}
+              />
+            </Card>
+          )}
           
           {/* Character count */}
           <div className="mt-2 text-right">
